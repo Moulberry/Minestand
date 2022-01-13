@@ -1,7 +1,12 @@
 # Minestand
 Annotation-based command framework for Minestom
 
-# Getting Started
+## Advantages over other frameworks
+Minestand works by converting your classes into Minestom commands
+All the command parsing, handling, etc. is done by Minestom, allowing this library to be relatively lightweight
+Uses MethodHandles/LambdaMetaFactory for invokation instead of reflection
+
+## Getting Started
 1. Add Minestand as a dependency:
 ```
 dependencies {
@@ -12,7 +17,7 @@ dependencies {
 3. Register the command using `Minestand#register`
 
 
-# Example Usage (from src/main/java/net/gauntletmc/command/examples)
+## Example Usage (from src/main/java/net/gauntletmc/command/examples)
 ```java
 @Alias("example")
 public class CommandExample {
