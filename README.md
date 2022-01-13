@@ -2,7 +2,7 @@
 Annotation-based command framework for Minestom
 
 # Getting Started
-1. Add Minestand as a maven dependency:
+1. Add Minestand as a dependency:
 ```
 dependencies {
      implementation 'com.github.Moulberry:Minestand:-SNAPSHOT'
