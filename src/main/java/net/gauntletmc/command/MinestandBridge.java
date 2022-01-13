@@ -55,7 +55,7 @@ class MinestandBridge {
 
             argF.setSuggestionCallback((sender, context, suggestion) -> {
                 String start = context.getRaw(argF);
-                for (String completion : completions.values()) {
+                for (String completion : completions.value()) {
                     if (start == null || completion.startsWith(start)) {
                         suggestion.getEntries().add(new SuggestionEntry(completion));
                     }
