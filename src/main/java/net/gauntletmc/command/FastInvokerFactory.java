@@ -2,12 +2,16 @@ package net.gauntletmc.command;
 
 import net.gauntletmc.command.consumers.NConsumer;
 import net.gauntletmc.command.exception.CommandParseException;
+import net.gauntletmc.command.functional.CommandCompletion;
+import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.CommandExecutor;
 
 import java.lang.invoke.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static net.gauntletmc.command.SenderTypeConverter.adapt;
 
@@ -40,6 +44,20 @@ class FastInvokerFactory {
         } else {
             return (NConsumer) callSite.getTarget().bindTo(bindTo).invoke();
         }
+    }
+
+    static CommandCompletion createCompletionProvider(Method method) throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle handle = lookup.unreflect(method);
+
+        CallSite callSite = LambdaMetafactory.metafactory(
+                lookup,
+                "apply",
+                MethodType.methodType(CommandCompletion.class),
+                MethodType.methodType(Collection.class, CommandSender.class, CommandContext.class),
+                handle,
+                MethodType.methodType(Collection.class, CommandSender.class, CommandContext.class));
+        return (CommandCompletion) callSite.getTarget().invoke();
     }
 
     private static Class<?> convertPrimitive(Class<?> in) {

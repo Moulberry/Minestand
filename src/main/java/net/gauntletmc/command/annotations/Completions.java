@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 /**
  * Enables server-side autocomplete for the argument
- * You must register the completion using Minestand#registerCompletion
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)

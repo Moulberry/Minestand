@@ -143,7 +143,7 @@ class MinestandParser {
             }
 
             names[i] = name;
-            arguments[i] = MinestandBridge.createArgument(classes[i+1], parameters[i+1], name);
+            arguments[i] = MinestandBridge.createArgument(classes[i+1], object.getClass(), parameters[i+1], name);
         }
 
         CommandExecutor executor;
@@ -176,7 +176,7 @@ class MinestandParser {
         boolean isPrivate = (method.getModifiers() & Modifier.PRIVATE) != 0;
 
         if (!hasAnnotation) {
-            if (!isPrivate) {
+            if (!isPrivate && method.getReturnType() == void.class) {
                 throw new CommandParseException("Public method in command class is missing @Alias annotation");
             }
             return;

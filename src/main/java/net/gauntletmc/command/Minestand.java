@@ -2,6 +2,8 @@ package net.gauntletmc.command;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
+import net.gauntletmc.command.functional.ErrorMessageHandler;
+import net.gauntletmc.command.functional.PermissionHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -16,22 +18,17 @@ import java.util.function.BiFunction;
 
 public class Minestand {
 
-    static BiConsumer<CommandSender, String> ERROR_MESSAGE_HANDLER = (sender, str) -> {
+    static ErrorMessageHandler ERROR_MESSAGE_HANDLER = (sender, str) -> {
         sender.sendMessage(Component.text(str, NamedTextColor.RED));
     };
-    static BiFunction<CommandSender, String, Boolean> PERMISSION_HANDLER = CommandSender::hasPermission;
-    static final Map<String, Collection<String>> COMPLETIONS = new HashMap<>();
+    static PermissionHandler PERMISSION_HANDLER = CommandSender::hasPermission;
 
-    public static void setPermissionHandler(BiFunction<CommandSender, String, Boolean> handler) {
+    public static void setPermissionHandler(PermissionHandler handler) {
         PERMISSION_HANDLER = handler;
     }
 
-    public static void setErrorMessageHandler(BiConsumer<CommandSender, String> handler) {
+    public static void setErrorMessageHandler(ErrorMessageHandler handler) {
         ERROR_MESSAGE_HANDLER = handler;
-    }
-
-    public static void registerCompletion(String completionId, Collection<String> collection) {
-        COMPLETIONS.put(completionId, collection);
     }
 
     public static void registerPackage(String packageName) {

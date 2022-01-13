@@ -8,6 +8,7 @@ import net.gauntletmc.command.annotations.Greedy;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.command.CommandSender;
+import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.CommandResult;
 import net.minestom.server.command.builder.CommandSyntax;
 import net.minestom.server.command.builder.arguments.Argument;
@@ -20,6 +21,7 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.utils.StringUtils;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -136,7 +138,7 @@ public class ExecutionTest {
     @Test
     public void completionTest() {
         ensureInitialized();
-        Minestand.registerCompletion("abc", List.of("hi", "hello", "banana"));
+        CompletionProvider.createLookup("@complete", "net.gauntletmc.command.ExecutionTest$Completion;completions");
         Minestand.register(Completion.class);
 
         final String text = "completion h";
@@ -164,8 +166,16 @@ public class ExecutionTest {
 
     @Alias("completion")
     public static class Completion {
+        public static Collection<String> completions(CommandSender sender, CommandContext context) {
+            return List.of("hi", "hello", "banana");
+        }
+
         @DefaultCommand
-        public void defaultCommand(CommandSender sender, @Completions("abc") String str) {
+        public void defaultCommand(CommandSender sender, @Completions("@complete") String str) {
+        }
+
+        @Alias("other")
+        public void otherCommand(CommandSender sender, @Completions("completions") String str) {
         }
     }
 

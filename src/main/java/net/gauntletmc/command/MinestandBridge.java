@@ -5,6 +5,7 @@ import net.gauntletmc.command.annotations.Max;
 import net.gauntletmc.command.annotations.Min;
 import net.gauntletmc.command.annotations.Optional;
 import net.gauntletmc.command.arguments.ArgumentOptional;
+import net.gauntletmc.command.functional.CommandCompletion;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.arguments.Argument;
@@ -15,12 +16,13 @@ import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Supplier;
 
 class MinestandBridge {
 
-    static Argument<?> createArgument(Class<?> clazz, Parameter parameter, String name) {
+    static Argument<?> createArgument(Class<?> clazz, Class<?> superClass, Parameter parameter, String name) {
         Argument<?> arg = MinestomArgumentFactory.getForClass(clazz, parameter, name);
 
         // Min & Max
@@ -39,13 +41,13 @@ class MinestandBridge {
         // Completions
         if (parameter.isAnnotationPresent(Completions.class)) {
             Completions completions = parameter.getAnnotation(Completions.class);
-            final String completionId = completions.value();
-            if (!Minestand.COMPLETIONS.containsKey(completionId)) {
-                throw new RuntimeException("Completion `"+completionId+"` referenced before registration");
-            }
+
+            final CommandCompletion commandCompletion = CompletionProvider.getCompletion(superClass, completions.value());
+
             argF.setSuggestionCallback((sender, context, suggestion) -> {
                 String start = context.getRaw(argF);
-                for (String completion : Minestand.COMPLETIONS.get(completionId)) {
+                Collection<String> completionValues = commandCompletion.apply(sender, context);
+                for (String completion : completionValues) {
                     if (start == null || completion.startsWith(start)) {
                         suggestion.getEntries().add(new SuggestionEntry(completion));
                     }
