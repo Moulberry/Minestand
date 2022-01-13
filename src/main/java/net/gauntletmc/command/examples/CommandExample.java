@@ -16,6 +16,7 @@ public class CommandExample {
         ));
     }
 
+    @RequiresPermission("your.permission.name")
     @Alias("teleportUp")
     public void teleportUp(Player sender, @Name("player") Player player, @Optional @Name("amount") int amount) {
         if (player == null) player = sender;
