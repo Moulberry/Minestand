@@ -10,6 +10,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +37,9 @@ public class Minestand {
             ClassPath classPath = ClassPath.from(Minestand.class.getClassLoader());
             ImmutableSet<ClassPath.ClassInfo> infos = classPath.getTopLevelClasses(packageName);
             for(ClassPath.ClassInfo info : infos) {
-                System.out.println("Loading class: " + info.getName());
+                System.out.println("Loading command class: " + info.getName());
                 Class<?> clazz = Class.forName(info.getName());
+                if ((clazz.getModifiers() & Modifier.ABSTRACT) != 0) continue;
                 register(clazz);
             }
         } catch(IOException | ClassNotFoundException e) {
