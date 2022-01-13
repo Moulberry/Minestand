@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
 	compileOnly 'com.github.Minestom:Minestom:0366027c5d'
-	testRuntimeOnly 'com.github.Minestom:Minestom:0366027c5d'
+	testImplementation 'com.github.Minestom:Minestom:0366027c5d'
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 	testImplementation("com.google.truth:truth:1.1.3")
