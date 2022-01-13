@@ -1,9 +1,6 @@
 package net.gauntletmc.command;
 
-import net.gauntletmc.command.annotations.Completions;
-import net.gauntletmc.command.annotations.Max;
-import net.gauntletmc.command.annotations.Min;
-import net.gauntletmc.command.annotations.Optional;
+import net.gauntletmc.command.annotations.*;
 import net.gauntletmc.command.arguments.ArgumentOptional;
 import net.gauntletmc.command.functional.CommandCompletion;
 import net.kyori.adventure.text.Component;
@@ -48,6 +45,17 @@ class MinestandBridge {
                 String start = context.getRaw(argF);
                 Collection<String> completionValues = commandCompletion.apply(sender, context);
                 for (String completion : completionValues) {
+                    if (start == null || completion.startsWith(start)) {
+                        suggestion.getEntries().add(new SuggestionEntry(completion));
+                    }
+                }
+            });
+        } else if(parameter.isAnnotationPresent(StaticCompletions.class)) {
+            StaticCompletions completions = parameter.getAnnotation(StaticCompletions.class);
+
+            argF.setSuggestionCallback((sender, context, suggestion) -> {
+                String start = context.getRaw(argF);
+                for (String completion : completions.values()) {
                     if (start == null || completion.startsWith(start)) {
                         suggestion.getEntries().add(new SuggestionEntry(completion));
                     }
