@@ -6,7 +6,8 @@ Annotation-based command framework for Minestom
 ```
 dependencies {
      implementation 'com.github.Moulberry:Minestand:-SNAPSHOT'
-}```
+}
+```
 2. Create a command (see below for example)
 3. Register the command using `Minestand#register`
 
@@ -36,4 +37,5 @@ public class CommandExample {
             sender.sendMessage(Component.text("Pong!"));
         }
     }
-}```
+}
+```
