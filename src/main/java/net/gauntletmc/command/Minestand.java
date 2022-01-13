@@ -34,8 +34,9 @@ public class Minestand {
     public static void registerPackage(String packageName) {
         try {
             ClassPath classPath = ClassPath.from(Minestand.class.getClassLoader());
-            ImmutableSet<ClassPath.ClassInfo> infos = classPath.getTopLevelClasses();
+            ImmutableSet<ClassPath.ClassInfo> infos = classPath.getTopLevelClasses(packageName);
             for(ClassPath.ClassInfo info : infos) {
+                System.out.println("Loading class: " + info.getName());
                 Class<?> clazz = Class.forName(info.getName());
                 register(clazz);
             }
