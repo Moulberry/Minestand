@@ -12,7 +12,7 @@ dependencies {
 3. Register the command using `Minestand#register`
 
 
-# Example Usage (from src/main/java/net/gauntletmc/command/examples)
+# Example Usage (from test/main/java/net/gauntletmc/command/examples)
 ```java
 @Alias("example")
 public class CommandExample {
