@@ -22,6 +22,11 @@ dependencies {
 @Alias("example")
 public class CommandExample {
 
+    @DefaultCommand
+    public void thisIsDefault(Player sender) {
+        sender.sendMessage(Component.text("Try /example echo"));
+    }
+
     @RequiresPermission("your.permission.name")
     @Alias("teleportUp")
     public void teleportUp(Player sender, @Name("player") Player player, @Optional @Name("amount") int amount) {
