@@ -10,6 +10,7 @@ import net.minestom.server.command.builder.arguments.number.ArgumentNumber;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
+import net.minestom.server.item.ItemStack;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
@@ -49,6 +50,8 @@ class MinestomArgumentFactory {
             return ArgumentType.UUID(name);
         } else if (clazz.isEnum()) {
             return ArgumentType.Enum(name, (Class<? extends Enum<?>>) clazz);
+        } else if (clazz == ItemStack.class) {
+            return ArgumentType.ItemStack(name);
         }
         throw new CommandParseException("Unknown argument type: " + clazz);
     }
