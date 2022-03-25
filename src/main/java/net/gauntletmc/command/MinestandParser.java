@@ -23,8 +23,8 @@ import java.util.Set;
 class MinestandParser {
 
     record ParsedClass(String[] names, @Nullable String requiredPermission,
-                       @Nullable ExecutableCommand defaultCommand, List<ParsedClass> subclasses,
-                       List<ParsedMethod> methods) {}
+                       @Nullable ExecutableCommand defaultCommand, @Nullable String defaultCommandPermission,
+                       List<ParsedClass> subclasses, List<ParsedMethod> methods) {}
     record ParsedMethod(String[] names, @Nullable String requiredPermission, ExecutableCommand executable) {}
     record ExecutableCommand(Argument<?>[] arguments, CommandExecutor executor) {}
 
@@ -94,6 +94,7 @@ class MinestandParser {
         }
 
         ExecutableCommand defaultCommand = null;
+        String defaultCommandPermission = null;
         List<ParsedMethod> methods = new ArrayList<>();
 
         for (Method method : clazz.getDeclaredMethods()) {
@@ -104,6 +105,9 @@ class MinestandParser {
                 methodSanityCheck(method, true);
 
                 defaultCommand = createExecutable(object, clazz, method);
+                if (method.isAnnotationPresent(RequiresPermission.class)) {
+                    defaultCommandPermission = method.getAnnotation(RequiresPermission.class).value();
+                }
             } else {
                 Alias subcommandAnnotation = method.getAnnotation(Alias.class);
                 methodSanityCheck(method, subcommandAnnotation != null);
@@ -125,7 +129,7 @@ class MinestandParser {
             requiredPermission = clazz.getAnnotation(RequiresPermission.class).value();
         }
 
-        return new ParsedClass(aliasAnnotation.value(), requiredPermission, defaultCommand, subclasses, methods);
+        return new ParsedClass(aliasAnnotation.value(), requiredPermission, defaultCommand, defaultCommandPermission, subclasses, methods);
     }
 
     private static ExecutableCommand createExecutable(Object object, Class<?> clazz, Method method) {
@@ -176,7 +180,7 @@ class MinestandParser {
         boolean isPrivate = (method.getModifiers() & Modifier.PRIVATE) != 0;
 
         if (!hasAnnotation) {
-            if (!isPrivate && method.getReturnType() == void.class) {
+            if (!isPrivate && !method.isSynthetic() && method.getReturnType() == void.class) {
                 throw new CommandParseException("Public method in command class is missing @Alias annotation");
             }
             return;

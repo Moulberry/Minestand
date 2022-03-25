@@ -4,12 +4,16 @@ import net.gauntletmc.command.annotations.*;
 import net.gauntletmc.command.arguments.ArgumentOptional;
 import net.gauntletmc.command.functional.CommandCompletion;
 import net.kyori.adventure.text.Component;
+import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
+import net.minestom.server.command.builder.CommandContext;
+import net.minestom.server.command.builder.CommandExecutor;
 import net.minestom.server.command.builder.arguments.Argument;
 import net.minestom.server.command.builder.arguments.ArgumentBoolean;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.arguments.number.ArgumentNumber;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
@@ -114,6 +118,15 @@ class MinestandBridge {
         // Add default command
         if (parsed.defaultCommand() != null) {
             addExecutable(command, parsed.defaultCommand());
+
+            if (parsed.defaultCommandPermission() != null) {
+                if (parsed.requiredPermission() != null) {
+                    command.setCondition((sender, string) -> Minestand.PERMISSION_HANDLER.apply(sender, parsed.requiredPermission()) &&
+                            Minestand.PERMISSION_HANDLER.apply(sender, parsed.defaultCommandPermission()));
+                } else {
+                    command.setCondition((sender, string) -> Minestand.PERMISSION_HANDLER.apply(sender, parsed.defaultCommandPermission()));
+                }
+            }
         }
 
         return command;
